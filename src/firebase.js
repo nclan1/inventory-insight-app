@@ -4,8 +4,8 @@ import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD20IDQDDE-KffH6UNHyF0frwHPP7lMQ0k",
-  authDomain: "inventory-insight.firebaseapp.com",
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
   projectId: "inventory-insight",
   storageBucket: "inventory-insight.appspot.com",
   messagingSenderId: "1077437198359",
