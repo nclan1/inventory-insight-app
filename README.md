@@ -1,6 +1,7 @@
 # Inventory Insight
 
-Inventory Insight is a simple CRUD (Create, Read, Update, Delete) application for tracking inventory. It's built with modern web technologies and is currently a work in progress.
+Inventory Insight is a simple CRUD (Create, Read, Update, Delete) application for tracking inventory. It is currently a work in progress.
+This is pretty much the same concept as my other todo.list app but this uses nextjs framework + firebase instead of mongodb as the database. I also don't have to set up a backend express server. 
 
 ## Tech Stack
 
