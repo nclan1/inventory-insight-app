@@ -1,8 +1,15 @@
 'use client'
-
+import './styles.css';
 import { useState, useEffect } from 'react'
 import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material'
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { firestore } from '@/src/firebase'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from 'geist/font/mono';
+
 import {
   collection,
   doc,
@@ -13,20 +20,25 @@ import {
   getDoc,
 } from 'firebase/firestore'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'white',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 3,
-}
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#FF5733',
+      // light: will be calculated from palette.primary.main,
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      main: '#32cb8b',
+    },
+  },
+  // typography: {
+  //   fontFamily: [
+  //     'Robert Sans',
+  //   ]
+  // }
+});
+
 
 export default function Home() {
 
@@ -83,88 +95,119 @@ export default function Home() {
   const handleClose = () => setOpen(false)
 
   return (
-    <Box
-    width="100vw"
-    height="100vh"
-    display={'flex'}
-    justifyContent={'center'}
-    flexDirection={'column'}
-    alignItems={'center'}
-    gap={2}
-  >
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Add Item
-        </Typography>
-        <Stack width="100%" direction={'row'} spacing={2}>
-          <TextField
-            id="outlined-basic"
-            label="Item"
-            variant="outlined"
-            fullWidth
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-          />
-          <Button
-            variant="outlined"
-            onClick={() => {
-              addItem(itemName)
-              setItemName('')
-              handleClose()
-            }}
-          >
-            Add
-          </Button>
-        </Stack>
-      </Box>
-    </Modal>
-    <Button variant="contained" onClick={handleOpen}>
-      Add New Item
-    </Button>
-    <Box border={'1px solid #333'}>
+    <ThemeProvider theme={theme}>
       <Box
-        width="800px"
-        height="100px"
-        bgcolor={'#ADD8E6'}
+        minHeight={'100vh'}
         display={'flex'}
         justifyContent={'center'}
+        flexDirection={'column'}
         alignItems={'center'}
+        gap={2}
+        backgroundColor={'#191b25'}
+        padding={8}
       >
-        <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
-          Inventory Items
-        </Typography>
-      </Box>
-      <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
-        {inventory.map(({name, quantity}) => (
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
           <Box
-            key={name}
-            width="100%"
-            minHeight="150px"
+            width={400}
+            backgroundColor={'#232533'}
             display={'flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            bgcolor={'#f0f0f0'}
-            paddingX={5}
+            flexDirection={'column'}
+            padding={4}
+            borderRadius={'10px'}
+            gap={2}
           >
-            <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
-              {name.charAt(0).toUpperCase() + name.slice(1)}
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              add item
             </Typography>
-            <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
-              Quantity: {quantity}
-            </Typography>
-            <Button variant="contained" onClick={() => removeItem(name)}>
-              Remove
-            </Button>
+  
+            <Stack width="100%" direction={'row'} spacing={2}>
+              <TextField
+                id="standard-basic"
+                variant='standard'
+                fullWidth
+                color='secondary'
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
+                InputProps={{
+                  style: {
+                    color: 'white'
+                  }
+                }}
+              />
+  
+              <Button
+                className='no-uppercase'
+                variant='outlined'
+                onClick={() => {
+                  addItem(itemName)
+                  setItemName('')
+                  handleClose()
+                }}
+              >
+                add
+              </Button>
+            </Stack>
           </Box>
-        ))}
-      </Stack>
-    </Box>
-  </Box>
+        </Modal>
+  
+        <Button 
+          variant='contained' 
+          onClick={handleOpen}
+          color="secondary"
+          className='no-uppercase'
+        >
+          add item
+        </Button>
+
+        <Box display={'flex'} flexDirection={'column'} gap={1}>
+          <Box
+            width={"40vw"}
+            p={2}
+            bgcolor={'#232533'}
+            borderRadius={'10px'}
+            display={'flex'}
+          >
+            <Typography variant={'h5'}>inventory</Typography>
+          </Box>
+          <Stack
+            width={"40vw"}
+            minHeight={"60vh"}
+            bgcolor={'#232533'}
+            borderRadius={'10px'}
+            overflow={'auto'}
+            padding={3}
+            gap={2}
+
+          >
+            {
+              inventory.map(({name, quantity}) => (
+                <Box 
+                  key={name}
+                  width={'100%'}
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  sx={{ borderBottom:"2px solid #191b25" }}>
+                  <Typography variant={'h6'} width={'33%'}>{name}</Typography>
+                  <Typography variant={'h6'} width={'33%'} display={'flex'} justifyContent={'center'}>{quantity}</Typography>
+                  <Box width={'33%'} display={'flex'} justifyContent={'flex-end'}>
+                    <IconButton color="primary" variant='contained' size='small' onClick={() => removeItem(name)} ><DeleteIcon /></IconButton>
+                    <IconButton color="primary" variant='contained' size='small' onClick={() => addItem(name)} ><AddIcon /></IconButton>
+                  </Box>
+                </Box>
+              ))
+            }
+
+          </Stack>
+        </Box>
+  
+      </Box>
+    </ThemeProvider>
   );
 }
