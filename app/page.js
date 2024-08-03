@@ -46,6 +46,7 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
+  const [filterName, setFilterName] = useState('')
 
   // fetch inventory data from Firestore
   const updateInventory = async () => {
@@ -62,6 +63,11 @@ export default function Home() {
     updateInventory()
   }, [])
 
+  const filteredInventory = inventory.filter(item =>
+    item.name.toLowerCase().startsWith(filterName.toLowerCase())
+  )
+
+  // console.log(inventory.forEach(item => console.log(item.name)))
   
   // add an item to the inventory
   const addItem = async (item) => {
@@ -93,6 +99,7 @@ export default function Home() {
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -156,13 +163,15 @@ export default function Home() {
           </Box>
         </Modal>
   
+      
         <Button 
-          variant='contained' 
-          onClick={handleOpen}
-          color="secondary"
-          className='no-uppercase'
-        >
-          add item
+            variant='contained' 
+            onClick={handleOpen}
+            color="secondary"
+            className='no-uppercase'
+            width={"50%"}
+          >
+            add item
         </Button>
 
         <Box display={'flex'} flexDirection={'column'} gap={1}>
@@ -172,8 +181,22 @@ export default function Home() {
             bgcolor={'#232533'}
             borderRadius={'10px'}
             display={'flex'}
+            gap={5}
           >
             <Typography variant={'h5'}>inventory</Typography>
+            <TextField 
+              id="standard-basic"
+              variant='standard'
+              fullWidth
+              color='secondary'
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+              InputProps={{
+                style: {
+                  color: 'white'
+                }
+              }}>
+          </TextField>
           </Box>
           <Stack
             width={"40vw"}
@@ -186,7 +209,7 @@ export default function Home() {
 
           >
             {
-              inventory.map(({name, quantity}) => (
+              filteredInventory.map(({name, quantity}) => (
                 <Box 
                   key={name}
                   width={'100%'}
